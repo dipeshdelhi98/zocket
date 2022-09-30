@@ -15,7 +15,7 @@ export const SidebarData = [
   },
   {
     title: "Campaign",
-    path: "/",
+    path: "/campaign",
     icon: <BsVolumeUpFill />,
     cName: "nav-text"
   },

@@ -8,6 +8,7 @@ import { BrowserRouter as Router,Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ChooseProduct from "./pages/ChooseProduct";
 import CampaignSetting from "./pages/CampaignSetting";
+import Campaign from "./pages/Campaign";
 
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/" exact element={<Home/>} />
           <Route path="/chooseproduct" exact element={<ChooseProduct/>} />
           <Route path="/campaignsetting" exact element={<CampaignSetting/>} />
+          <Route path="/campaign" exact element={<Campaign/>} />
          
         </Routes>
       </Router>

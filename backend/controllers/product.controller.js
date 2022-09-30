@@ -35,25 +35,40 @@ module.exports={
         try{
 
             
-            const {campaign,platform,status}=req.query
+            const {campaign,platform,status,clicks,budget}=req.query
 
             let filter={}
 
+            let mysort;
+
             if(campaign){
-                filter.campaign= { $regex: campaign, $options: 'i' }
+                filter.campaign= { $regex: campaign, $options: '$i' }
             }
 
             if(platform){
-                filter.platform={ $regex: platform, $options: 'i' }
+                filter.platform={ $regex: platform, $options: '$i' }
             }
             if(status){
-                filter.status={ $regex: status, $options: 'i' }
+                filter.status={ $regex: status, $options: '$i' }
 
             }
+
+            if(clicks){
+                mysort={clicks:clicks}
+            }
+
+            if(budget){
+            
+                mysort={budget:budget}
+            }
+
+        
 
     
 
-            const productData=await Products.find(filter)
+            const productData=await Products.find(filter).sort(mysort)
+
+
             return res.status(200).json({
                 status:"Success",
                 data:productData

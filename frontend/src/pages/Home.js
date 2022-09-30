@@ -17,6 +17,8 @@ import Typography from '@mui/material/Typography';
 import rows from "./rowsData";
 import { Link } from "react-router-dom";
 import axios from 'axios';
+import { Pagination } from "@material-ui/lab";
+import usePagination from "./Pagination";
 
 import {AiOutlinePlusCircle,AiFillEdit,AiFillDelete} from 'react-icons/ai'
 
@@ -74,11 +76,35 @@ const Home= () =>{
   const [search,setsearch]=useState("")
   const [platform, setplatform] = useState('');
   const [status,setstatus]=useState("")
+  const [click,setclick]=useState("")
+  const [budget,setbudget]=useState("")
+
+  let [page, setPage] = useState(1);
+  const PER_PAGE = 3;
+
+  const count = Math.ceil(tableData.length / PER_PAGE);
+  const _DATA = usePagination(tableData, PER_PAGE);
+
+  const handleChange = (e, p) => {
+    setPage(p);
+    _DATA.jump(p);
+  };
 
 
   const statusChange=(e)=>{
     e.preventDefault()
     setstatus(e.target.value)
+  }
+  const budgetChange=(e)=>{
+    e.preventDefault()
+    setbudget(e.target.value)
+    setclick("")
+  }
+  const clickChange=(e)=>{
+    e.preventDefault()
+    console.log(e.target.value)
+    setclick(e.target.value)
+    setbudget("")
   }
   const platformChange = (e) => {
     e.preventDefault()
@@ -105,7 +131,8 @@ const Home= () =>{
   }
 
   useEffect(()=>{
-    axios.get(`http://localhost:4000/zocket/all?campaign=${search}&platform=${platform}&status=${status}`).then((data)=>{
+    axios.get(`http://localhost:4000/zocket/all?campaign=${search}&platform=${platform}&status=${status}&clicks=${click}&budget=${budget}`).then((data)=>{
+
  settableDate(data.data.data)
 
    
@@ -113,7 +140,7 @@ const Home= () =>{
     console.log(err)
   })
 
-  },[change,search,platform,status])
+  },[change,search,platform,status,click,budget])
 
   
 
@@ -188,15 +215,50 @@ style={{marginRight:"10px"}}/>Create New Campaign</Button>
     
     <Paper className="container">
       <Table>
+    
         <TableHead>
           <TableRow>
+            
           <TableCell><Checkbox /></TableCell>
            
             <TableCell>On/Off</TableCell>
             <TableCell numeric>Campaign</TableCell>
             <TableCell numeric>Date Range</TableCell>
-            <TableCell numeric>Clicks</TableCell>
-            <TableCell numeric>Budget</TableCell>
+            <TableCell numeric>Clicks
+
+            <Select
+              value={click}
+              onChange={clickChange}
+              label="Sort By">
+
+<MenuItem value="">
+            <em>All</em>
+          </MenuItem>
+      
+          <MenuItem value={"1"}>ASC</MenuItem>
+          <MenuItem value={"-1"}>DESC</MenuItem>
+    
+
+            </Select>
+            
+            </TableCell>
+            <TableCell numeric>Budget
+            
+            
+            <Select
+             value={budget}
+              onChange={budgetChange}
+              label="Sort By">
+
+<MenuItem value="">
+            <em>All</em>
+          </MenuItem>
+      
+          <MenuItem value={"1"}>ASC</MenuItem>
+          <MenuItem value={"-1"}>DESC</MenuItem>
+    
+
+            </Select></TableCell>
             <TableCell numeric>Location</TableCell>
             <TableCell numeric>Platform</TableCell>
             <TableCell numeric>Status</TableCell>
@@ -204,7 +266,7 @@ style={{marginRight:"10px"}}/>Create New Campaign</Button>
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableData.map(({ _id,campaign,dateRange,clicks,budget,location,platform,status }) => (
+          { _DATA.currentData().map(({ _id,campaign,dateRange,clicks,budget,location,platform,status }) => (
             <TableRow key={_id}>
                 <TableCell><Checkbox /></TableCell>
                 <TableCell> <Stack direction="row" spacing={1} alignItems="center">
@@ -215,15 +277,25 @@ style={{marginRight:"10px"}}/>Create New Campaign</Button>
       <TableCell numeric>{campaign}</TableCell>
               <TableCell numeric>{dateRange}</TableCell>
               <TableCell numeric>{clicks}</TableCell>
-              <TableCell numeric>{budget}</TableCell>
+              <TableCell numeric>{budget} INR</TableCell>
               <TableCell numeric>{location}</TableCell>
               <TableCell numeric>{platform}</TableCell>
               <TableCell numeric>{status}</TableCell>
-              <TableCell numeric><AiFillEdit/>     <AiFillDelete onClick={(e)=>deleteHandler(e,{_id})}/></TableCell>
+              <TableCell numeric>   <AiFillDelete onClick={(e)=>deleteHandler(e,{_id})}/></TableCell>
              
             </TableRow>
           ))}
         </TableBody>
+
+        <Pagination
+        count={count}
+        size="large"
+        page={page}
+        variant="outlined"
+        shape="rounded"
+        onChange={handleChange}
+      />
+        
       </Table>
     </Paper>
   </div>

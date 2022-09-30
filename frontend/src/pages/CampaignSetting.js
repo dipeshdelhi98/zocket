@@ -39,10 +39,10 @@ const CampaignSetting = () => {
       settingObj.location=e.target.value
     }else if(type==="radius"){
       setradius(e.target.value)
-      settingObj.radius=`${e.target.value} KM`
+      settingObj.radius=`${e.target.value}`
     }else if(type==="budget"){
       setbudget(e.target.value)
-      settingObj.budget=`INR ${e.target.value}`
+      settingObj.budget=`${e.target.value}`
     }
 
 
